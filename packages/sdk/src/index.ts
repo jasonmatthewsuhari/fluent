@@ -13,14 +13,8 @@ export {
   createWindowsAutomationAdapter
 } from "./automation/index.js";
 
-export type {
-  AIProvider,
-  PlanRequest
-} from "./provider.js";
-export type {
-  SafetyDecision,
-  SafetyPolicy
-} from "./safety.js";
+export type { AIProvider, PlanRequest } from "./provider.js";
+export type { SafetyDecision, SafetyPolicy } from "./safety.js";
 export type {
   ComputerUseAgent,
   ComputerUseAgentOptions,

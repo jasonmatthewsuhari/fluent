@@ -1,0 +1,90 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "en-US"
+early_access: false
+enable_free_tier: true
+tone_instructions: "Be direct, practical, and accessibility-aware. Prioritize real bugs, safety risks, privacy issues, regressions, and missing tests."
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: true
+  high_level_summary: true
+  high_level_summary_in_walkthrough: true
+  review_status: true
+  review_details: true
+  commit_status: true
+  fail_commit_status: true
+  collapse_walkthrough: true
+  changed_files_summary: true
+  sequence_diagrams: true
+  estimate_code_review_effort: true
+  assess_linked_issues: true
+  related_issues: true
+  suggested_labels: true
+  suggested_reviewers: false
+  poem: false
+  path_filters:
+    - "!dist/**"
+    - "!release/**"
+    - "!node_modules/**"
+    - "!package-lock.json"
+  labeling_instructions:
+    - label: "accessibility"
+      instructions: "Apply when the PR changes UI, keyboard navigation, focus, contrast, screen-reader behavior, or assistive input support."
+    - label: "automation"
+      instructions: "Apply when the PR changes desktop control, OS automation, permissions, agent actions, screenshots, or safety policy."
+    - label: "security"
+      instructions: "Apply when the PR changes secrets, provider keys, local storage, IPC, permissions, external requests, or release workflows."
+    - label: "documentation"
+      instructions: "Apply when the PR primarily changes Markdown, issue templates, repo policy, or project documentation."
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false
+    labels:
+      - "!skip-review"
+  path_instructions:
+    - path: "src/**/*"
+      instructions: "Review React code for accessibility regressions, keyboard reachability, visible focus, robust state handling, and text that may overflow at larger sizes."
+    - path: "electron/**/*"
+      instructions: "Review Electron code for context isolation, unsafe Node exposure, IPC validation, permission boundaries, and local desktop automation safety."
+    - path: ".github/workflows/**/*"
+      instructions: "Review workflows for least-privilege permissions, untrusted pull_request_target use, secret exposure, unsafe shell interpolation, and release integrity."
+    - path: "docs/**/*"
+      instructions: "Review docs for overclaiming medical, legal compliance, autonomy, or accessibility guarantees."
+  pre_merge_checks:
+    title:
+      mode: "warning"
+      requirements: "Title should be concise, specific, and describe the user-facing or engineering change."
+    description:
+      mode: "warning"
+    custom_checks:
+      - name: "Accessibility risk"
+        mode: "error"
+        instructions: "Fail if UI changes remove keyboard access, visible focus, readable text, meaningful labels, or stop/confirmation affordances without an equivalent replacement."
+      - name: "Automation safety"
+        mode: "error"
+        instructions: "Fail if automation, screenshots, provider calls, or IPC changes can execute high-impact actions without explicit permission, confirmation, or a visible stop path."
+      - name: "Secrets and privacy"
+        mode: "error"
+        instructions: "Fail if code logs secrets, commits credentials, sends screenshots or desktop context externally without clear boundaries, or weakens local key handling."
+  tools:
+    github-checks:
+      enabled: true
+      timeout_ms: 900000
+    actionlint:
+      enabled: true
+    eslint:
+      enabled: true
+    markdownlint:
+      enabled: true
+    gitleaks:
+      enabled: true
+    trufflehog:
+      enabled: true
+    semgrep:
+      enabled: true
+    osvScanner:
+      enabled: true
+
+chat:
+  auto_reply: true

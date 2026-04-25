@@ -1,4 +1,8 @@
-import { AutomationAdapter, CapabilityRegistry, createCapabilityRegistry } from "./automation/index.js";
+import {
+  AutomationAdapter,
+  CapabilityRegistry,
+  createCapabilityRegistry
+} from "./automation/index.js";
 import { AsyncEventQueue } from "./event-queue.js";
 import { createId } from "./ids.js";
 import { AIProvider } from "./provider.js";

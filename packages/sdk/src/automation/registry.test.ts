@@ -10,8 +10,12 @@ describe("automation capability registry", () => {
     ]);
     const capabilities = await registry.getCapabilities("windows");
 
-    expect(capabilities.every((capability) => capability.platform === "windows")).toBe(true);
-    expect(capabilities.map((capability) => capability.name)).toContain("keyboard.typeText");
+    expect(capabilities.every((capability) => capability.platform === "windows")).toBe(
+      true
+    );
+    expect(capabilities.map((capability) => capability.name)).toContain(
+      "keyboard.typeText"
+    );
   });
 
   it("executes an available capability", async () => {

@@ -1,8 +1,4 @@
-import {
-  AutomationAction,
-  AutomationResult,
-  FluentPlatform
-} from "../types.js";
+import { AutomationAction, AutomationResult, FluentPlatform } from "../types.js";
 
 export type AutomationCapabilityName = AutomationAction["capability"];
 
@@ -26,5 +22,8 @@ export type CapabilityRegistry = {
   register(adapter: AutomationAdapter): void;
   getAdapters(platform?: FluentPlatform): AutomationAdapter[];
   getCapabilities(platform?: FluentPlatform): Promise<AutomationCapability[]>;
-  execute(action: AutomationAction, platform?: FluentPlatform): Promise<AutomationResult>;
+  execute(
+    action: AutomationAction,
+    platform?: FluentPlatform
+  ): Promise<AutomationResult>;
 };

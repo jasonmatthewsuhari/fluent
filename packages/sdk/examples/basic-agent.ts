@@ -1,8 +1,4 @@
-import {
-  Fluent,
-  MockAIProvider,
-  createMockAutomationAdapter
-} from "@fluent-ai/sdk";
+import { Fluent, MockAIProvider, createMockAutomationAdapter } from "@fluent-ai/sdk";
 
 const provider = new MockAIProvider();
 const registry = Fluent.computerUse.automation.createCapabilityRegistry();

@@ -1,8 +1,4 @@
-import {
-  AutomationAction,
-  AutomationResult,
-  FluentPlatform
-} from "../types.js";
+import { AutomationAction, AutomationResult, FluentPlatform } from "../types.js";
 import {
   AutomationAdapter,
   AutomationCapability,
@@ -37,7 +33,10 @@ export function createCapabilityRegistry(
       return capabilities;
     },
 
-    async execute(action: AutomationAction, platform?: FluentPlatform): Promise<AutomationResult> {
+    async execute(
+      action: AutomationAction,
+      platform?: FluentPlatform
+    ): Promise<AutomationResult> {
       const adapters = this.getAdapters(platform);
 
       for (const adapter of adapters) {

@@ -1,8 +1,4 @@
-import {
-  AutomationAction,
-  AutomationResult,
-  FluentPlatform
-} from "../types.js";
+import { AutomationAction, AutomationResult, FluentPlatform } from "../types.js";
 import { baseCapabilities } from "./capabilities.js";
 import { AutomationAdapter } from "./types.js";
 
@@ -30,7 +26,9 @@ export type NutAutomationOptions = {
   getActiveWindow?: () => Promise<unknown>;
 };
 
-export function createNutAutomationAdapter(options: NutAutomationOptions): AutomationAdapter {
+export function createNutAutomationAdapter(
+  options: NutAutomationOptions
+): AutomationAdapter {
   return {
     id: `nut-js-${options.platform}`,
     platform: options.platform,
@@ -90,7 +88,9 @@ async function executeNutAction(
     }
 
     case "mouse.move": {
-      const point = nut.Point ? new nut.Point(action.x, action.y) : { x: action.x, y: action.y };
+      const point = nut.Point
+        ? new nut.Point(action.x, action.y)
+        : { x: action.x, y: action.y };
       await nut.mouse.setPosition(point);
       return { x: action.x, y: action.y };
     }

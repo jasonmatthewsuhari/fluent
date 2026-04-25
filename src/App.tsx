@@ -152,9 +152,7 @@ function App() {
         }
       ]);
       setTimeline((current) =>
-        current.map((item) =>
-          item.id === 2 ? { ...item, state: "done" } : item
-        )
+        current.map((item) => (item.id === 2 ? { ...item, state: "done" } : item))
       );
       setStatusText("Waiting for confirmation");
       setIsWorking(false);
@@ -212,8 +210,8 @@ function App() {
             Bring your own key
           </div>
           <p>
-            Provider access is mocked for this pass. The UI is ready for local
-            key setup and premium access later.
+            Provider access is mocked for this pass. The UI is ready for local key setup
+            and provider selection later.
           </p>
         </section>
 
@@ -255,7 +253,12 @@ function App() {
           <button className="icon-button pause" type="button" aria-label="Pause agent">
             <CirclePause size={22} aria-hidden="true" />
           </button>
-          <button className="icon-button stop" type="button" onClick={stopAgent} aria-label="Stop agent">
+          <button
+            className="icon-button stop"
+            type="button"
+            onClick={stopAgent}
+            aria-label="Stop agent"
+          >
             <Square size={20} aria-hidden="true" />
           </button>
         </section>
@@ -265,7 +268,11 @@ function App() {
             {messages.map((message) => (
               <article className={`message ${message.author}`} key={message.id}>
                 <div className="avatar" aria-hidden="true">
-                  {message.author === "agent" ? <Bot size={20} /> : <UserRound size={20} />}
+                  {message.author === "agent" ? (
+                    <Bot size={20} />
+                  ) : (
+                    <UserRound size={20} />
+                  )}
                 </div>
                 <p>{message.text}</p>
               </article>
@@ -294,8 +301,8 @@ function App() {
             <p className="eyebrow">Safety check</p>
             <h3>Confirm before desktop control</h3>
             <p>
-              When real automation is connected, Fluent will ask before actions
-              that change files, send messages, purchase items, or affect privacy.
+              When real automation is connected, Fluent will ask before actions that
+              change files, send messages, purchase items, or affect privacy.
             </p>
           </div>
           <button className="primary-action" type="button">
@@ -315,7 +322,12 @@ function App() {
               placeholder="Tell Fluent what to do..."
               autoComplete="off"
             />
-            <button className="send-button" type="submit" disabled={isWorking || !command.trim()} aria-label="Send command">
+            <button
+              className="send-button"
+              type="submit"
+              disabled={isWorking || !command.trim()}
+              aria-label="Send command"
+            >
               <ArrowUp size={22} aria-hidden="true" />
             </button>
           </div>

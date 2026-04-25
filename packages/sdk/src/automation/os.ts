@@ -1,10 +1,7 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { FluentPlatform } from "../types.js";
-import {
-  createNutAutomationAdapter,
-  NutAutomationOptions
-} from "./nut-js.js";
+import { createNutAutomationAdapter, NutAutomationOptions } from "./nut-js.js";
 
 const execFileAsync = promisify(execFile);
 

@@ -1,0 +1,114 @@
+name: Nightly Release
+
+on:
+  schedule:
+    - cron: "23 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nightly-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+          - name: macOS
+            os: macos-latest
+          - name: Linux
+            os: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app artifacts
+        run: npm run dist
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Upload nightly artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: fluent-nightly-${{ matrix.name }}
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.zip
+            release/*.AppImage
+            release/*.deb
+            !release/**/*.blockmap
+            !release/**/builder-debug.yml
+            !release/**/builder-effective-config.yaml
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Publish nightly release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Prepare release notes
+        shell: bash
+        run: |
+          cat > nightly-notes.md <<'NOTES'
+          # Fluent Nightly
+
+          Automated pre-alpha build from `main`.
+
+          These artifacts are unsigned and intended for developer/testing use only.
+          Do not rely on nightly builds for daily assistive workflows.
+
+          ## Quality gates
+
+          - TypeScript typecheck
+          - ESLint with accessibility rules
+          - Markdown lint
+          - Prettier format check
+          - Production Vite build
+          - High-severity production dependency audit
+          - Cross-platform Electron packaging
+          NOTES
+
+      - name: Replace nightly release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mapfile -d '' files < <(find artifacts -type f -print0)
+          gh release delete nightly --yes --cleanup-tag || true
+          git tag -f nightly "$GITHUB_SHA"
+          git push --force origin nightly
+          gh release create nightly "${files[@]}" \
+            --target "$GITHUB_SHA" \
+            --title "Fluent Nightly" \
+            --notes-file nightly-notes.md \
+            --prerelease

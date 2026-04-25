@@ -5,7 +5,10 @@ export type TextInputOptions = {
   metadata?: Record<string, unknown>;
 };
 
-export function fromText(text: string, options: TextInputOptions = {}): NaturalLanguageIntent {
+export function fromText(
+  text: string,
+  options: TextInputOptions = {}
+): NaturalLanguageIntent {
   const normalizedText = text.trim().replace(/\s+/g, " ");
 
   if (!normalizedText) {
