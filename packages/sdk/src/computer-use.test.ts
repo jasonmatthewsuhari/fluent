@@ -50,6 +50,45 @@ describe("computer use agent", () => {
     expect(seen.at(-1)).toBe("task.completed");
   });
 
+  it("requires confirmation before clipboard writes", async () => {
+    const agent = createAgent({
+      provider: new MockAIProvider(),
+      adapters: [createMockAutomationAdapter("windows")]
+    });
+    const task = agent.startTask({
+      input: input.fromText("Write hello to clipboard"),
+      context: { platform: "windows" }
+    });
+    const seen: string[] = [];
+
+    for await (const event of task.events) {
+      seen.push(event.type);
+
+      if (event.type === "confirmation.required") {
+        expect(event.action.capability).toBe("clipboard.writeText");
+        task.confirmAction(event.action.id);
+      }
+    }
+
+    expect(seen).toContain("confirmation.required");
+    expect(seen.at(-1)).toBe("task.completed");
+  });
+
+  it("allows clipboard reads without confirmation", async () => {
+    const agent = createAgent({
+      provider: new MockAIProvider(),
+      adapters: [createMockAutomationAdapter("windows")]
+    });
+    const task = agent.startTask({
+      input: input.fromText("Read clipboard"),
+      context: { platform: "windows" }
+    });
+    const events = await collectEvents(task.events);
+
+    expect(events.map((event) => event.type)).not.toContain("confirmation.required");
+    expect(events.at(-1)?.type).toBe("task.completed");
+  });
+
   it("blocks when a confirmation is rejected", async () => {
     const agent = createAgent({
       provider: new MockAIProvider(),

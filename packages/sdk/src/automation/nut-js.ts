@@ -4,7 +4,7 @@ import {
   FluentPlatform
 } from "../types.js";
 import { baseCapabilities } from "./capabilities.js";
-import { AutomationAdapter } from "./types.js";
+import { AutomationAdapter, AutomationReadiness } from "./types.js";
 
 type NutModule = {
   keyboard: {
@@ -15,6 +15,7 @@ type NutModule = {
   mouse: {
     setPosition: (point: unknown) => Promise<void>;
     click: (button?: unknown) => Promise<void>;
+    doubleClick?: (button?: unknown) => Promise<void>;
   };
   screen: {
     grab: () => Promise<unknown>;
@@ -28,6 +29,10 @@ export type NutAutomationOptions = {
   platform: FluentPlatform;
   openApp?: (appName: string) => Promise<unknown>;
   getActiveWindow?: () => Promise<unknown>;
+  readClipboardText?: () => Promise<string>;
+  writeClipboardText?: (text: string) => Promise<unknown>;
+  revealPath?: (path: string) => Promise<unknown>;
+  getReadiness?: () => Promise<AutomationReadiness> | AutomationReadiness;
 };
 
 export function createNutAutomationAdapter(options: NutAutomationOptions): AutomationAdapter {
@@ -39,15 +44,27 @@ export function createNutAutomationAdapter(options: NutAutomationOptions): Autom
       return baseCapabilities(options.platform);
     },
 
+    async getReadiness() {
+      if (options.getReadiness) {
+        return options.getReadiness();
+      }
+
+      return createReadyReadiness(options.platform);
+    },
+
     async execute(action: AutomationAction): Promise<AutomationResult> {
       try {
-        const nut = await loadNutJs();
-        const output = await executeNutAction(nut, action, options);
+        const platformOutput = await executePlatformAction(action, options);
+        const output =
+          platformOutput.handled
+            ? platformOutput.output
+            : await executeNutAction(await loadNutJs(), action);
 
         return {
           actionId: action.id,
           capability: action.capability,
           ok: true,
+          status: "success",
           output
         };
       } catch (error) {
@@ -55,6 +72,7 @@ export function createNutAutomationAdapter(options: NutAutomationOptions): Autom
           actionId: action.id,
           capability: action.capability,
           ok: false,
+          status: error instanceof UnsupportedAutomationError ? "unsupported" : "failed",
           error: error instanceof Error ? error.message : String(error)
         };
       }
@@ -74,13 +92,19 @@ async function loadNutJs(): Promise<NutModule> {
 
 async function executeNutAction(
   nut: NutModule,
-  action: AutomationAction,
-  options: NutAutomationOptions
+  action: AutomationAction
 ): Promise<unknown> {
   switch (action.capability) {
     case "keyboard.typeText":
       await nut.keyboard.type(action.text);
       return { typed: action.text.length };
+
+    case "keyboard.pressKey": {
+      const key = resolveKey(nut, action.key);
+      await nut.keyboard.pressKey(key);
+      await nut.keyboard.releaseKey(key);
+      return { key: action.key };
+    }
 
     case "keyboard.pressShortcut": {
       const keys = action.keys.map((key) => resolveKey(nut, key));
@@ -99,22 +123,62 @@ async function executeNutAction(
       await nut.mouse.click(resolveButton(nut, action.button ?? "left"));
       return { button: action.button ?? "left" };
 
+    case "mouse.doubleClick": {
+      const button = resolveButton(nut, action.button ?? "left");
+      if (nut.mouse.doubleClick) {
+        await nut.mouse.doubleClick(button);
+      } else {
+        await nut.mouse.click(button);
+        await nut.mouse.click(button);
+      }
+      return { button: action.button ?? "left" };
+    }
+
     case "screen.screenshot":
       return nut.screen.grab();
 
+    default:
+      throw new UnsupportedAutomationError(`Capability ${action.capability} is not handled by nut.js.`);
+  }
+}
+
+async function executePlatformAction(
+  action: AutomationAction,
+  options: NutAutomationOptions
+): Promise<{ handled: true; output: unknown } | { handled: false }> {
+  switch (action.capability) {
     case "window.getActive":
       if (!options.getActiveWindow) {
-        return { supported: false };
+        throw new UnsupportedAutomationError("Active window inspection is not configured for this adapter.");
       }
-
-      return options.getActiveWindow();
+      return { handled: true, output: await options.getActiveWindow() };
 
     case "app.open":
       if (!options.openApp) {
-        return { supported: false, appName: action.appName };
+        throw new UnsupportedAutomationError("App launch is not configured for this adapter.");
       }
+      return { handled: true, output: await options.openApp(action.appName) };
 
-      return options.openApp(action.appName);
+    case "clipboard.readText":
+      if (!options.readClipboardText) {
+        throw new UnsupportedAutomationError("Clipboard read is not configured for this adapter.");
+      }
+      return { handled: true, output: { text: await options.readClipboardText() } };
+
+    case "clipboard.writeText":
+      if (!options.writeClipboardText) {
+        throw new UnsupportedAutomationError("Clipboard write is not configured for this adapter.");
+      }
+      return { handled: true, output: await options.writeClipboardText(action.text) };
+
+    case "filesystem.revealPath":
+      if (!options.revealPath) {
+        throw new UnsupportedAutomationError("Filesystem reveal is not configured for this adapter.");
+      }
+      return { handled: true, output: await options.revealPath(action.path) };
+
+    default:
+      return { handled: false };
   }
 }
 
@@ -129,4 +193,20 @@ function resolveKey(nut: NutModule, key: string): unknown {
   const normalized = key.length === 1 ? key.toUpperCase() : key;
 
   return keyMap[normalized] ?? keyMap[key] ?? key;
+}
+
+class UnsupportedAutomationError extends Error {}
+
+function createReadyReadiness(platform: FluentPlatform) {
+  return {
+    platform,
+    ok: true,
+    checks: [
+      {
+        name: "adapter",
+        status: "ready" as const,
+        message: "Automation adapter is configured."
+      }
+    ]
+  };
 }

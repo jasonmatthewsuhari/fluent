@@ -75,6 +75,12 @@ npm run sdk:build
 npm run sdk:test
 ```
 
+Real desktop automation smoke tests are opt-in:
+
+```bash
+FLUENT_REAL_AUTOMATION=1 npm run sdk:smoke:windows
+```
+
 ## Status
 
 Fluent is in pre-alpha. It is not ready for daily assistive use yet, and it should not be treated as medical, emergency, or safety-critical infrastructure.

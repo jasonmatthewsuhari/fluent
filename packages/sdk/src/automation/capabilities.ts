@@ -12,6 +12,14 @@ export function baseCapabilities(platform: FluentPlatform): AutomationCapability
       requiresConfirmation: true
     },
     {
+      name: "keyboard.pressKey",
+      platform,
+      description: "Press and release a single keyboard key.",
+      risk: "input",
+      available: true,
+      requiresConfirmation: true
+    },
+    {
       name: "keyboard.pressShortcut",
       platform,
       description: "Press a keyboard shortcut.",
@@ -36,6 +44,14 @@ export function baseCapabilities(platform: FluentPlatform): AutomationCapability
       requiresConfirmation: true
     },
     {
+      name: "mouse.doubleClick",
+      platform,
+      description: "Double-click at the current pointer location.",
+      risk: "input",
+      available: true,
+      requiresConfirmation: true
+    },
+    {
       name: "screen.screenshot",
       platform,
       description: "Capture the current screen.",
@@ -55,6 +71,30 @@ export function baseCapabilities(platform: FluentPlatform): AutomationCapability
       name: "app.open",
       platform,
       description: "Open an application by name or command.",
+      risk: "state_change",
+      available: true,
+      requiresConfirmation: true
+    },
+    {
+      name: "clipboard.readText",
+      platform,
+      description: "Read text from the system clipboard.",
+      risk: "read",
+      available: true,
+      requiresConfirmation: false
+    },
+    {
+      name: "clipboard.writeText",
+      platform,
+      description: "Write text to the system clipboard.",
+      risk: "state_change",
+      available: true,
+      requiresConfirmation: true
+    },
+    {
+      name: "filesystem.revealPath",
+      platform,
+      description: "Reveal a file or folder in the platform file manager.",
       risk: "state_change",
       available: true,
       requiresConfirmation: true

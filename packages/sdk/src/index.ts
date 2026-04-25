@@ -30,12 +30,15 @@ export type {
   AutomationAdapter,
   AutomationCapability,
   AutomationCapabilityName,
+  AutomationReadiness,
+  AutomationReadinessCheck,
   CapabilityRegistry
 } from "./automation/index.js";
 export type {
   AgentContext,
   AgentPlan,
   AutomationAction,
+  AutomationFailureStatus,
   AutomationResult,
   ComputerUseEvent,
   FluentPlatform,
