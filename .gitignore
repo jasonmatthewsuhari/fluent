@@ -221,3 +221,11 @@ __marimo__/
 # Local agent/research notes
 AGENTS.md
 docs/business-research.md
+
+# Node / frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+vite-*.log
