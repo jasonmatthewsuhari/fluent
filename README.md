@@ -60,9 +60,20 @@ See [docs/architecture.md](docs/architecture.md) for the working architecture di
 - [Accessibility principles](docs/accessibility-principles.md)
 - [Architecture](docs/architecture.md)
 - [Frontend plan](docs/frontend-plan.md)
+- [SDK package](packages/sdk/README.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security](SECURITY.md)
 - [Support](SUPPORT.md)
+
+## SDK Development
+
+The SDK is the first implementation target and lives in `packages/sdk`.
+
+```bash
+npm install
+npm run sdk:build
+npm run sdk:test
+```
 
 ## Status
 
