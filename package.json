@@ -7,6 +7,9 @@
   "type": "module",
   "author": "Fluent contributors",
   "license": "Apache-2.0",
+  "workspaces": [
+    "packages/*"
+  ],
   "engines": {
     "node": ">=22.12.0",
     "npm": ">=10"
@@ -14,13 +17,17 @@
   "scripts": {
     "dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 electron electron/main.cjs\"",
     "electron": "electron electron/main.cjs",
-    "typecheck": "tsc --noEmit",
+    "app:typecheck": "tsc --noEmit",
+    "sdk:build": "npm --workspace @fluent-ai/sdk run build",
+    "sdk:test": "npm --workspace @fluent-ai/sdk run test",
+    "typecheck": "npm run app:typecheck && npm run sdk:build",
+    "test": "npm run sdk:test",
     "lint": "eslint . --max-warnings=0",
-    "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\" \"!dist\" \"!release\"",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\" \"!dist\" \"!release\" \"!packages/*/dist\"",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
-    "check": "npm run typecheck && npm run lint && npm run lint:md && npm run format:check && npm run build && npm run audit:prod",
+    "check": "npm run typecheck && npm run test && npm run lint && npm run lint:md && npm run format:check && npm run build && npm run audit:prod",
     "build": "npm run typecheck && vite build",
     "package": "npm run build && electron-builder --dir --publish never",
     "dist": "npm run build && electron-builder --publish never",
@@ -29,7 +36,7 @@
   "build": {
     "appId": "dev.fluent.accessibility",
     "productName": "Fluent",
-    "copyright": "Copyright © 2026 Fluent contributors",
+    "copyright": "Copyright (c) 2026 Fluent contributors",
     "directories": {
       "output": "release"
     },
@@ -76,6 +83,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/node": "^22.10.2",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
@@ -92,6 +100,7 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
     "vite": "^7.1.12",
+    "vitest": "^2.1.9",
     "wait-on": "^8.0.1"
   }
 }

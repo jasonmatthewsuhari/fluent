@@ -63,9 +63,20 @@ See [docs/architecture.md](docs/architecture.md) for the working architecture di
 - [Development](docs/development.md)
 - [DevOps](docs/devops.md)
 - [Release process](docs/release.md)
+- [SDK package](packages/sdk/README.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security](SECURITY.md)
 - [Support](SUPPORT.md)
+
+## SDK Development
+
+The SDK is the first implementation target and lives in `packages/sdk`.
+
+```bash
+npm install
+npm run sdk:build
+npm run sdk:test
+```
 
 ## Status
 

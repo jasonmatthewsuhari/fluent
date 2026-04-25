@@ -12,6 +12,7 @@ build/
 node_modules/
 develop-eggs/
 dist/
+packages/*/dist/
 release/
 downloads/
 eggs/
