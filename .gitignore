@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local agent/research notes
+AGENTS.md
+docs/business-research.md
