@@ -1,0 +1,38 @@
+name: Accessibility feedback
+description: Share feedback about usability, access needs, or assistive technology compatibility.
+title: "[Accessibility]: "
+labels: ["accessibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Accessibility feedback is especially valuable. Share only what you are comfortable making public.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What were you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: barrier
+    attributes:
+      label: Barrier
+      description: What made the experience difficult, confusing, tiring, or inaccessible?
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Input method or assistive technology
+      description: Share relevant tools or settings, if comfortable.
+      placeholder: Keyboard only, switch access, screen reader, voice control, eye tracking, large text, reduced motion
+    validations:
+      required: false
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Suggested improvement
+      description: What would make this work better for you?
+    validations:
+      required: false
