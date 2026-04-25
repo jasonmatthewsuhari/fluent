@@ -4,6 +4,8 @@ Fluent is planned as an Electron desktop app with a visible agent loop and a pla
 
 ## Core Modules
 
+- **SDK core:** the primary product surface for computer-use agent sessions and input-to-language translation.
+
 - **App shell:** Electron lifecycle, windows, native menus, packaging, updates.
 - **Accessible UI:** command input, conversation history, action timeline, confirmation prompts, settings.
 - **Agent core:** intent interpretation, planning, clarification, tool selection, result reporting.
@@ -23,6 +25,7 @@ Fluent is planned as an Electron desktop app with a visible agent loop and a pla
 
 ## Design Constraints
 
+- The Electron app should consume the SDK rather than owning agent logic.
 - New input modes should plug into the agent core without rewriting automation.
 - Provider code should be isolated from UI components.
 - Automation tools should return observable results.
