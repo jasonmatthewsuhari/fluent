@@ -16,7 +16,7 @@ It blocks on:
 - Production build failures.
 - High-severity production dependency advisories.
 
-The `Dependency Review` workflow blocks pull requests that introduce high-severity vulnerable dependencies.
+The `Dependency Review` workflow blocks high-severity production dependency advisories with `npm audit`. GitHub's native dependency-review action also runs and comments on dependency diffs when the repository Dependency Graph is enabled.
 
 The `CodeQL` workflow scans JavaScript and TypeScript for security issues.
 
