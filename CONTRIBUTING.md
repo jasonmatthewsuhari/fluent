@@ -83,9 +83,11 @@ Avoid as a first PR:
 
 2. Check existing GitHub issues and pull requests for overlap.
 
-3. For anything larger than a narrow fix, open or comment on an issue first. This is especially important for SDK boundaries, automation behavior, provider handling, safety policy, or UI workflow changes.
+3. Make sure your work has a linked GitHub issue before opening a pull request. If no issue exists, open one first so the scope, motivation, and acceptance criteria are visible.
 
-4. Keep your first PR small. A focused PR with one clear improvement is more likely to be reviewed quickly and merged correctly.
+4. For anything larger than a narrow fix, comment on the issue before implementation. This is especially important for SDK boundaries, automation behavior, provider handling, safety policy, or UI workflow changes.
+
+5. Keep your first PR small. A focused PR with one clear improvement is more likely to be reviewed quickly and merged correctly.
 
 ## Make Your First PR
 
@@ -235,6 +237,7 @@ In the PR description:
 
 - Explain what changed.
 - Explain why it matters.
+- Link the issue with `Closes #123`, `Fixes #123`, or `Refs #123`.
 - List what you tested.
 - Note accessibility impact.
 - Note safety and privacy impact.
@@ -262,6 +265,7 @@ The repo does not currently expose separate lint, format, or test scripts. Do no
 
 A good Fluent PR is:
 
+- Linked to a GitHub issue that explains the problem or proposed change.
 - Focused on one problem.
 - Small enough to review without guessing intent.
 - Clear about user-facing behavior.
