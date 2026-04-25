@@ -23,11 +23,12 @@ Fluent is an early open-source project for accessible desktop control. Contribut
 
 Before opening a pull request:
 
-1. Check existing issues and pull requests for overlap.
-2. Keep changes focused on one topic.
-3. Explain the user-facing behavior change.
-4. Include tests or describe why tests are not practical yet.
-5. Note any accessibility impact.
+1. Link the pull request to an existing GitHub issue. If no issue exists, open one first so the scope and context are visible.
+2. Check existing issues and pull requests for overlap.
+3. Keep changes focused on one topic.
+4. Explain the user-facing behavior change.
+5. Include tests or describe why tests are not practical yet.
+6. Note any accessibility impact.
 
 For UI work, include screenshots or short recordings when possible.
 
