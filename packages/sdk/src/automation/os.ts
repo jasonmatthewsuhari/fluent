@@ -11,12 +11,12 @@ const execFileAsync = promisify(execFile);
 export function createWindowsAutomationAdapter() {
   return createNutAutomationAdapter({
     platform: "windows",
-    openApp: (appName) => execFileAsync("cmd.exe", ["/c", "start", "", appName]),
+    openApp: (appName) => spawnDetached("cmd.exe", ["/c", "start", "", appName]),
     getActiveWindow: getWindowsActiveWindow,
     readClipboardText: () => execText("powershell.exe", ["-NoProfile", "-Command", "Get-Clipboard -Raw"]),
     writeClipboardText: (text) =>
       execFileAsync("powershell.exe", ["-NoProfile", "-Command", "Set-Clipboard -Value $args[0]", text]),
-    revealPath: (targetPath) => execFileAsync("explorer.exe", [`/select,${targetPath}`]),
+    revealPath: (targetPath) => spawnDetached("explorer.exe", [`/select,${targetPath}`]),
     getReadiness: () => createWindowsReadiness()
   });
 }
@@ -24,11 +24,11 @@ export function createWindowsAutomationAdapter() {
 export function createMacOSAutomationAdapter() {
   return createNutAutomationAdapter({
     platform: "macos",
-    openApp: (appName) => execFileAsync("open", ["-a", appName]),
+    openApp: (appName) => spawnDetached("open", ["-a", appName]),
     getActiveWindow: getMacOSActiveWindow,
     readClipboardText: () => execText("pbpaste", []),
     writeClipboardText: (text) => execWithInput("pbcopy", [], text),
-    revealPath: (targetPath) => execFileAsync("open", ["-R", targetPath]),
+    revealPath: (targetPath) => spawnDetached("open", ["-R", targetPath]),
     getReadiness: () => createCommandReadiness("macos", ["open", "pbpaste", "pbcopy"])
   });
 }
@@ -36,11 +36,11 @@ export function createMacOSAutomationAdapter() {
 export function createLinuxAutomationAdapter() {
   return createNutAutomationAdapter({
     platform: "linux",
-    openApp: (appName) => execFileAsync(appName, []),
+    openApp: (appName) => spawnDetached(appName, []),
     getActiveWindow: getLinuxActiveWindow,
     readClipboardText: readLinuxClipboard,
     writeClipboardText: writeLinuxClipboard,
-    revealPath: (targetPath) => execFileAsync("xdg-open", [targetPath]),
+    revealPath: (targetPath) => spawnDetached("xdg-open", [targetPath]),
     getReadiness: () => createCommandReadiness("linux", ["xdg-open"])
   });
 }
@@ -240,5 +240,25 @@ function execWithInput(command: string, args: string[], input: string): Promise<
     });
 
     child.stdin.end(input);
+  });
+}
+
+function spawnDetached(command: string, args: string[]): Promise<{ launched: boolean; command: string; args: string[] }> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      detached: true,
+      stdio: "ignore",
+      windowsHide: true
+    });
+
+    child.once("error", reject);
+    child.once("spawn", () => {
+      child.unref();
+      resolve({
+        launched: true,
+        command,
+        args
+      });
+    });
   });
 }
