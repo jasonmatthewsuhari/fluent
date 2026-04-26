@@ -14,6 +14,7 @@
     "build": "tsc --noEmit && vite build && npm run sdk:build",
     "sdk:build": "npm --workspace @fluent-ai/sdk run build",
     "sdk:test": "npm --workspace @fluent-ai/sdk run test",
+    "sdk:smoke:windows": "npm --workspace @fluent-ai/sdk run smoke:windows",
     "test": "npm run sdk:test",
     "preview": "vite preview --host 127.0.0.1"
   },

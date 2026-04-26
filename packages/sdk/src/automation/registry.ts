@@ -37,6 +37,30 @@ export function createCapabilityRegistry(
       return capabilities;
     },
 
+    async getReadiness(platform?: FluentPlatform) {
+      const readiness = [];
+
+      for (const adapter of this.getAdapters(platform)) {
+        if (adapter.getReadiness) {
+          readiness.push(await adapter.getReadiness());
+        } else {
+          readiness.push({
+            platform: adapter.platform,
+            ok: true,
+            checks: [
+              {
+                name: "adapter",
+                status: "unknown" as const,
+                message: "Adapter does not expose readiness checks."
+              }
+            ]
+          });
+        }
+      }
+
+      return readiness;
+    },
+
     async execute(action: AutomationAction, platform?: FluentPlatform): Promise<AutomationResult> {
       const adapters = this.getAdapters(platform);
 
@@ -55,6 +79,7 @@ export function createCapabilityRegistry(
         actionId: action.id,
         capability: action.capability,
         ok: false,
+        status: "unsupported",
         error: `No available automation capability found for ${action.capability}.`
       };
     }

@@ -21,12 +21,23 @@ export type AgentContext = {
 
 export type AutomationRisk = "read" | "input" | "state_change" | "sensitive";
 
+export type AutomationFailureStatus =
+  | "unsupported"
+  | "permission_denied"
+  | "failed";
+
 export type AutomationAction =
   | {
       id: FluentId;
       capability: "keyboard.typeText";
       risk: AutomationRisk;
       text: string;
+    }
+  | {
+      id: FluentId;
+      capability: "keyboard.pressKey";
+      risk: AutomationRisk;
+      key: string;
     }
   | {
       id: FluentId;
@@ -49,6 +60,12 @@ export type AutomationAction =
     }
   | {
       id: FluentId;
+      capability: "mouse.doubleClick";
+      risk: AutomationRisk;
+      button?: "left" | "right" | "middle";
+    }
+  | {
+      id: FluentId;
       capability: "screen.screenshot";
       risk: AutomationRisk;
     }
@@ -62,6 +79,23 @@ export type AutomationAction =
       capability: "app.open";
       risk: AutomationRisk;
       appName: string;
+    }
+  | {
+      id: FluentId;
+      capability: "clipboard.readText";
+      risk: AutomationRisk;
+    }
+  | {
+      id: FluentId;
+      capability: "clipboard.writeText";
+      risk: AutomationRisk;
+      text: string;
+    }
+  | {
+      id: FluentId;
+      capability: "filesystem.revealPath";
+      risk: AutomationRisk;
+      path: string;
     };
 
 export type AgentPlan = {
@@ -74,8 +108,10 @@ export type AutomationResult = {
   actionId: FluentId;
   capability: AutomationAction["capability"];
   ok: boolean;
+  status: "success" | AutomationFailureStatus;
   output?: unknown;
   error?: string;
+  metadata?: Record<string, unknown>;
 };
 
 export type ComputerUseEvent =

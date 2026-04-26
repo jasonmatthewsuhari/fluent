@@ -18,7 +18,8 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "smoke:windows": "npm run build && node dist/smoke/windows.js"
   },
   "peerDependencies": {
     "@nut-tree-fork/nut-js": "^4.2.6"

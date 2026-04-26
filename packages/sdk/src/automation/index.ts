@@ -13,5 +13,7 @@ export type {
   AutomationAdapter,
   AutomationCapability,
   AutomationCapabilityName,
+  AutomationReadiness,
+  AutomationReadinessCheck,
   CapabilityRegistry
 } from "./types.js";

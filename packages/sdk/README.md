@@ -48,6 +48,19 @@ for await (const event of task.events) {
 - Event-stream computer-use task runtime.
 - Confirmation-gated automation.
 - Capability registry with Windows, macOS, and Linux adapter factories.
-- Optional real basic actions through `@nut-tree-fork/nut-js`.
+- App launch, keyboard, mouse, screenshot, active window, clipboard, and filesystem reveal action contracts.
+- OS-backed app/window/clipboard/reveal actions plus optional real keyboard/mouse/screenshot actions through `@nut-tree-fork/nut-js`.
+- Adapter readiness checks for platform dependencies.
 
 The SDK does not include real hosted AI provider integrations yet.
+
+## Real Automation Smoke Test
+
+Real automation is opt-in because it can open apps, type, and move the pointer.
+
+```bash
+npm install @nut-tree-fork/nut-js
+FLUENT_REAL_AUTOMATION=1 npm run sdk:smoke:windows
+```
+
+Normal `npm test` never runs real desktop automation.
